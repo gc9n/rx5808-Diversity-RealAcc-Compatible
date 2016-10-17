@@ -272,7 +272,7 @@ void setup()
  
 #ifdef USE_IR_EMITTER
     // Used to Transmit IR Payloads
-    Serial.begin(9600);
+   // Serial.begin(9600);
 #endif
 
 #ifdef USE_DIVERSITY
