@@ -73,14 +73,17 @@ SOFTWARE.
     #define receiverB_led A1
     #define rssiPinB A7
     #define useReceiverAuto 0
-    #define useReceiverB 2
+    #define useReceiverB 2   
     // rssi strenth should be 2% greater than other receiver before switch.
     // this pervents flicker when rssi values are close and delays diversity checks counter.
-    #define DIVERSITY_CUTOVER 2
-    // number of checks a receiver needs to win over the other to switch receivers.
+    
+    #define DIVERSITY_CUTOVER 4 // changing this to 4% to try making it smoother
+
+    // Original comments number of checks a receiver needs to win over the other to switch receivers.
     // this pervents rapid switching.
+
     // 1 to 10 is a good range. 1 being fast switching, 10 being slow 100ms to switch.
-    #define DIVERSITY_MAX_CHECKS 5
+    #define DIVERSITY_MAX_CHECKS 7 //chaging this to 7 try making it smoother eliminate sync problems.
 #endif
 
 // this two are minimum required
