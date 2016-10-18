@@ -171,15 +171,18 @@ bool settings_orderby_channel = true;
 bool HaveFav = false;
 bool RefreshFav = false;
 uint8_t FirstFav =0;
+bool FATSHARK_BUTTON_PUSHED=false;
+int  LAST_FATSHARK_BUTTON_STATE=0;
 int lfavs=0;
 // SETUP ----------------------------------------------------------------------------
 void setup()
-{
+{ Serial.begin(9600);
     // IO INIT
     // initialize digital pin 13 LED as an output.
     pinMode(led, OUTPUT); // status pin for TV mode errors
     digitalWrite(led, HIGH);
     // buzzer
+    pinMode(CH3, INPUT_PULLUP);//BUTTON FROM FATSHARK
     pinMode(buzzer, OUTPUT); // Feedback buzzer (active buzzer, not passive piezo)
     digitalWrite(buzzer, HIGH);
     // minimum control pins
@@ -224,9 +227,7 @@ void setup()
         for(uint8_t i = 0;i<sizeof(call_sign);i++) {
             EEPROM.write(EEPROM_ADR_CALLSIGN+i,call_sign[i]);
         }
-
-
-
+ 
 #ifdef USE_DIVERSITY
         // diversity
         EEPROM.write(EEPROM_ADR_DIVERSITY,diversity_mode);
@@ -238,7 +239,7 @@ void setup()
         EEPROM.write(EEPROM_ADR_RSSI_MAX_B_H,highByte(RSSI_MAX_VAL));
 #endif
     }
-
+  
     // read last setting from eeprom
     state=EEPROM.read(EEPROM_ADR_STATE);
     channelIndex=EEPROM.read(EEPROM_ADR_TUNE);
@@ -275,7 +276,7 @@ void setup()
  
 #ifdef USE_IR_EMITTER
     // Used to Transmit IR Payloads
-    Serial.begin(9600);
+ 
 #endif
 
 #ifdef USE_DIVERSITY
@@ -286,7 +287,7 @@ void setup()
 #endif
     // Setup Done - Turn Status LED off.
     digitalWrite(led, LOW);
-
+ 
 }
 
 // LOOP ----------------------------------------------------------------------------
@@ -514,7 +515,7 @@ void loop()
                 drawScreen.seekMode(state);
 
                 // return user to their saved channel after bandscan
-                if(state_last_used == STATE_SCAN || last_state == STATE_RSSI_SETUP) {
+                if(state_last_used == STATE_SCAN ||state_last_used == STATE_FAVORITE || last_state == STATE_RSSI_SETUP ) {
                     channelIndex=EEPROM.read(EEPROM_ADR_TUNE);
                 }
                 state_last_used=state;
@@ -528,6 +529,7 @@ void loop()
 
             break;
             case STATE_SAVE:
+
                 EEPROM.write(EEPROM_ADR_TUNE,channelIndex);
                 EEPROM.write(EEPROM_ADR_STATE,state_last_used);
                 EEPROM.write(EEPROM_ADR_BEEP,settings_beeps);
@@ -539,15 +541,7 @@ void loop()
             #ifdef USE_DIVERSITY
                             EEPROM.write(EEPROM_ADR_DIVERSITY,diversity_mode);
             #endif
-//            Serial.print ("last_state=");
-//            Serial.println (last_state);
-//            Serial.print ("state=");
-//            Serial.println (state);
-//             Serial.print ("STATE_FAVORITE=");
-//            Serial.println (STATE_FAVORITE);
-//             Serial.print ("state_last_used=");
-//            Serial.println (state_last_used);
-            
+ 
             if (last_state!=STATE_SETUP_MENU  && state_last_used!=STATE_FAVORITE ) // if you didnt came from menu setup  save favorite
             {
                 // Serial.println("bike sto vasiko");
@@ -565,37 +559,18 @@ void loop()
                       }
                     EEPROM.write(EEPROM_ADR_TUNE_FAV[lfav],255); // rotate the favs if full
                     EEPROM.write(EEPROM_ADR_TUNE_FAV_LAST,lfav);
-                     //Serial.print ("full will empty the ");
-                     //Serial.println (lfav);
+ 
                   }
                 for(int i = 1; i<=10; i++)
                 {
-                       //Serial.println (EEPROM.read(EEPROM_ADR_TUNE_FAV[i]) );
                       if ( EEPROM.read(EEPROM_ADR_TUNE_FAV[i]) == 255) //not used  gc9n
                       {
-                         //Serial.print ("checking fav position ");
-                          //Serial.println (i);
-                        
                         EEPROM.write(EEPROM_ADR_TUNE_FAV[i],channelIndex);
                         EEPROM.write(EEPROM_ADR_TUNE_FAV_LAST,i);
-                        
-                          //Serial.print ("setting the channel ");
-                         //Serial.println (EEPROM.read(EEPROM_ADR_TUNE_FAV[i]) );
-                          //Serial.print ("to position ");
-                          //Serial.println (EEPROM.read(EEPROM_ADR_TUNE_FAV_LAST));
                         i=12;//exit loop
                       }
                 }
 
-//                saving to favorites 
-//                //Serial.print("channelIndex");
-//                //Serial.println(channelIndex);
-//                //Serial.print("state_last_used");
-//                //Serial.println(state_last_used);
-//                //Serial.print("settings_beeps");
-//                //Serial.println(settings_beeps);
-//                //Serial.print("settings_orderby_channel");
-//                //Serial.println(settings_orderby_channel);
                 drawScreen.save(state_last_used, channelIndex, pgm_read_word_near(channelFreqTable + channelIndex), call_sign,EEPROM.read(EEPROM_ADR_TUNE_FAV_LAST));
             }
             if (last_state==STATE_SETUP_MENU)
@@ -607,6 +582,7 @@ void loop()
             ///LONG PRESS IN FAVORITES WILL DELETE THE CURRENT FAVORITE CHANNEL
             if  (state_last_used==STATE_FAVORITE )    
             {
+              
               EEPROM.write(EEPROM_ADR_TUNE_FAV[lfavs],255);
               drawScreen.FavDelete(   pgm_read_word_near(channelFreqTable + channelIndex), lfavs);
               RefreshFav=false;
@@ -637,7 +613,7 @@ void loop()
                 drawScreen.FavMode(state,FirstFav);
 
                 // return user to their saved channel after bandscan
-                if(state_last_used == STATE_SCAN || last_state == STATE_RSSI_SETUP) {
+                if(state_last_used == STATE_SCAN ||state_last_used == STATE_FAVORITE  || last_state == STATE_RSSI_SETUP) {
                     channelIndex=EEPROM.read(EEPROM_ADR_TUNE);
                 }
                 state_last_used=state;
@@ -721,7 +697,8 @@ void loop()
     /*   Processing FAVORITES                */
     /*****************************************/
     if(state == STATE_FAVORITE )//|| state == STATE_SEEK)
-    {
+    { 
+
         // read rssi
         wait_rssi_ready();
         rssi = readRSSI();
@@ -731,6 +708,8 @@ void loop()
          
          if (!RefreshFav)
          {
+          
+          EEPROM.write(EEPROM_ADR_STATE,STATE_FAVORITE);
           HaveFav=false;
           for(int i = 1; i<=10; i++)
                 {
@@ -743,43 +722,44 @@ void loop()
                 RefreshFav=true;
         //channel=channel_from_index(channelIndex); // get 0...48 index depending of current channel
          }
-
-        if(state == STATE_FAVORITE) // MANUAL MODE
-        { 
-            // handling of keys
+ 
+           // handling of keys
             if( digitalRead(buttonUp) == LOW)        // channel UP
             { 
               delay(KEY_DEBOUNCE); // debounce
                   lfavs++; 
                   if (lfavs>10)
                   {lfavs=FirstFav;}
-                 //Serial.print  ("UPEEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) "); 
+                 //Serial.println  ("UPEEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) "); 
                  //Serial.print  (EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) );
                  //Serial.print  (" lfavs"); 
-                 //Serial.println  (lfavs );
-                 
-                channelIndex=EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) ;
-                if (channelIndex!=255)
-                 { 
-                  
-                  delay(KEY_DEBOUNCE); // debounce
-                    drawScreen.FavSel(lfavs);
-                    channel=channel_from_index(channelIndex); // get 0...48 index depending of current channel
-                    time_screen_saver=millis();
-                    beep(50); // beep & debounce
+                 // Serial.println  (lfavs );
+               
+                    channelIndex=EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) ;
+                    if (channelIndex!=255)
+                     { 
+                      
                     
-                    //channelIndex++;
-                    //channel++;
-                    channel > CHANNEL_MAX ? channel = CHANNEL_MIN : false;
-                    if (channelIndex > CHANNEL_MAX_INDEX)
-                    {
-                        channelIndex = CHANNEL_MIN_INDEX;
-                    }   
-                    drawScreen.seekMode(state);
-                }
-                  else
-                {lfavs--;}
+                        drawScreen.FavSel(lfavs);
+                        channel=channel_from_index(channelIndex); // get 0...48 index depending of current channel
+                        time_screen_saver=millis();
+                        beep(50); // beep & debounce
+                          delay(KEY_DEBOUNCE); // debounce
+                        channel > CHANNEL_MAX ? channel = CHANNEL_MIN : false;
+                        if (channelIndex > CHANNEL_MAX_INDEX)
+                        {
+                            channelIndex = CHANNEL_MIN_INDEX;
+                        }   
+                        drawScreen.seekMode(state);
+                        EEPROM.write(EEPROM_ADR_TUNE,channelIndex);
+                        Serial.println(channelIndex);
+                    }
+                      else
+                    {lfavs--;}
+                 
             }
+
+ 
             if( digitalRead(buttonDown) == LOW) // channel DOWN
             { 
 
@@ -788,12 +768,7 @@ void loop()
                 lfavs--;
                  if (lfavs<=0)
                 {lfavs=FirstFav;}
-               
-                 //Serial.print  ("downEEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) "); 
-                 //Serial.print  (EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) );
-                  //Serial.print  (" lfavs"); 
-                 //Serial.println  (lfavs );
-                 
+    
                 channelIndex=EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) ;
                  if (channelIndex!=255)
                 {   
@@ -802,9 +777,7 @@ void loop()
                     time_screen_saver=millis();
                     beep(50); // beep & debounce
                     delay(KEY_DEBOUNCE); // debounce
-                    //channelIndex--;
-                    //channel--;
-                    
+                  
                     channel < CHANNEL_MIN ? channel = CHANNEL_MAX : false;
                     if (channelIndex > CHANNEL_MAX_INDEX) // negative overflow
                     {
@@ -812,83 +785,21 @@ void loop()
                     }
                   
                   drawScreen.seekMode(state);
+                  EEPROM.write(EEPROM_ADR_TUNE,channelIndex);
                 }
                 else
                 {lfavs++;}
             }
-
-            if(!settings_orderby_channel) { // order by frequency
-                channelIndex = pgm_read_byte_near(channelList + channel);
-            }
-
-        }
-
-        // handling for seek mode after screen and RSSI has been fully processed
-        if(state == STATE_SEEK) //
-        { // SEEK MODE
-
-            // recalculate rssi_seek_threshold
-            ((int)((float)rssi_best * (float)(RSSI_SEEK_TRESHOLD/100.0)) > rssi_seek_threshold) ? (rssi_seek_threshold = (int)((float)rssi_best * (float)(RSSI_SEEK_TRESHOLD/100.0))) : false;
-
-            if(!seek_found) // search if not found
-            {
-                if ((!force_seek) && (rssi > rssi_seek_threshold)) // check for found channel
-                {
-                    seek_found=1;
-                    time_screen_saver=millis();
-                    // beep twice as notice of lock
-                    beep(100);
-                    delay(100);
-                    beep(100);
-                }
-                else
-                { // seeking itself
-                    force_seek=0;
-                    // next channel
-                    channel+=seek_direction;
-                    if (channel > CHANNEL_MAX)
-                    {
-                        // calculate next pass new seek threshold
-                        rssi_seek_threshold = (int)((float)rssi_best * (float)(RSSI_SEEK_TRESHOLD/100.0));
-                        channel=CHANNEL_MIN;
-                        rssi_best = 0;
-                    }
-                    else if(channel < CHANNEL_MIN)
-                    {
-                        // calculate next pass new seek threshold
-                        rssi_seek_threshold = (int)((float)rssi_best * (float)(RSSI_SEEK_TRESHOLD/100.0));
-                        channel=CHANNEL_MAX;
-                        rssi_best = 0;
-                    }
-                    rssi_seek_threshold = rssi_seek_threshold < 5 ? 5 : rssi_seek_threshold; // make sure we are not stopping on everyting
-                    channelIndex = pgm_read_byte_near(channelList + channel);
-                }
-            }
-            else
-            { // seek was successful
-              
-            }
-            if (digitalRead(buttonUp) == LOW || digitalRead(buttonDown) == LOW) // restart seek if key pressed
-            {
-                if(digitalRead(buttonUp) == LOW) {
-                    seek_direction = 1;
-                }
-                else {
-                    seek_direction = -1;
-                }
-                beep(50); // beep & debounce
-                delay(KEY_DEBOUNCE); // debounce
-                force_seek=1;
-                seek_found=0;
-                time_screen_saver=0;
-            }
-        }
- 
+   
         if (HaveFav==false)
-        {drawScreen.NoFav(state);}   // IF YOU DINT HAVE FAVS
+        {drawScreen.NoFav(state);
+        
+        }   // IF YOU DINT HAVE FAVS
+
+        
         else
         {drawScreen.updateSeekMode(state, channelIndex, channel, rssi, pgm_read_word_near(channelFreqTable + channelIndex), rssi_seek_threshold, seek_found);}// IF YOU HAVE FAVS
-        
+     
     }
 
  
