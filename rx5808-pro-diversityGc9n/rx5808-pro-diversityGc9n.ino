@@ -735,11 +735,6 @@ void loop()
           for(int i = 1; i<=10; i++)
                 {
                   //NoFav
-//                      
-                       Serial.print(i);
-                       Serial.print  (" VALUE ");
-                       Serial.println (EEPROM.read(EEPROM_ADR_TUNE_FAV[i]) );
-                        
                       if (EEPROM.read(EEPROM_ADR_TUNE_FAV[i])!=255)
                       {  FirstFav=i;
                         HaveFav=true;
@@ -756,7 +751,7 @@ void loop()
             { 
               delay(KEY_DEBOUNCE); // debounce
                   lfavs++; 
-                  if (lfavs>=11)
+                  if (lfavs>10)
                   {lfavs=FirstFav;}
                  //Serial.print  ("UPEEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) "); 
                  //Serial.print  (EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) );
@@ -765,12 +760,14 @@ void loop()
                  
                 channelIndex=EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) ;
                 if (channelIndex!=255)
-                {
-                     
+                 { 
+                  
+                  delay(KEY_DEBOUNCE); // debounce
+                    drawScreen.FavSel(lfavs);
                     channel=channel_from_index(channelIndex); // get 0...48 index depending of current channel
                     time_screen_saver=millis();
                     beep(50); // beep & debounce
-                    delay(KEY_DEBOUNCE); // debounce
+                    
                     //channelIndex++;
                     //channel++;
                     channel > CHANNEL_MAX ? channel = CHANNEL_MIN : false;
@@ -778,16 +775,20 @@ void loop()
                     {
                         channelIndex = CHANNEL_MIN_INDEX;
                     }   
+                    drawScreen.seekMode(state);
                 }
                   else
                 {lfavs--;}
             }
             if( digitalRead(buttonDown) == LOW) // channel DOWN
             { 
+
+               
                 delay(KEY_DEBOUNCE); // debounce
                 lfavs--;
                  if (lfavs<=0)
                 {lfavs=FirstFav;}
+               
                  //Serial.print  ("downEEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) "); 
                  //Serial.print  (EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) );
                   //Serial.print  (" lfavs"); 
@@ -796,6 +797,7 @@ void loop()
                 channelIndex=EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) ;
                  if (channelIndex!=255)
                 {   
+                    drawScreen.FavSel(lfavs);
                     channel=channel_from_index(channelIndex); // get 0...48 index depending of current channel
                     time_screen_saver=millis();
                     beep(50); // beep & debounce
@@ -809,7 +811,7 @@ void loop()
                         channelIndex = CHANNEL_MAX_INDEX;
                     }
                   
-                 
+                  drawScreen.seekMode(state);
                 }
                 else
                 {lfavs++;}
@@ -864,7 +866,7 @@ void loop()
             }
             else
             { // seek was successful
-
+              
             }
             if (digitalRead(buttonUp) == LOW || digitalRead(buttonDown) == LOW) // restart seek if key pressed
             {
