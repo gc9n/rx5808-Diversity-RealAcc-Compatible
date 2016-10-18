@@ -142,6 +142,8 @@ void screens::drawTitleBox(const char *title) {
   // center text
   display.setCursor(((display.width() - (strlen(title) * 6)) / 2), 2);
   display.print(title);
+ 
+  
   display.setTextColor(WHITE);
 }
 
@@ -235,13 +237,43 @@ void screens::seekMode(uint8_t state) {
   display.display();
 }
 
+void screens::FavDelete( uint16_t channelFrequency, uint8_t channel)
+ { reset(); // start from fresh screen.
+  drawTitleBox(PSTR2("DELETE FAVORITE CHAN"));
+  display.setTextColor(WHITE);
+  display.setCursor(5, 8 * 1 + 4);
+  display.print(PSTR2("CHANNEL FREQ:"));
+  display.setCursor(85, 8 * 1 + 4);
+  display.print((channelFrequency));
+  display.setCursor(5, 8 * 2 + 4);
+  display.print(PSTR2("FAV CHANNEL:"));
+  display.setCursor(85, 8 * 2 + 4);
+  display.print(channel);
 
-void screens::FavMode(uint8_t state) {
+   display.setCursor(((display.width() - 11 * 6) / 2), 8 * 6 + 4);
+  display.print(PSTR2("-- DELETED --"));
+  display.display();
+  }
+ void screens::NoFav(uint8_t state) 
+ {
+  reset(); // start from fresh screen.
+  drawTitleBox(PSTR2("FAVORITES"));
+
+
+  display.setTextSize(3);
+  display.setTextColor(WHITE);
+  display.setCursor(20, 20);
+  display.print("EMPTY");
+  display.display();
+ }
+void screens::FavMode(uint8_t state ,uint8_t lfavs) {
   last_channel = -1;
   reset(); // start from fresh screen.
   if (state == STATE_FAVORITE)
   {
-    drawTitleBox(PSTR2("FAVORITES"));
+    drawTitleBox(PSTR2("FAVORITES "));
+    
+    
   }
   else if (state == STATE_SEEK)
   {
