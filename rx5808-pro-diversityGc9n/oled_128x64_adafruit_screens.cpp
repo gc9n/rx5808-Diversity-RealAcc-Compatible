@@ -254,11 +254,23 @@ void screens::FavDelete( uint16_t channelFrequency, uint8_t channel)
   display.print(PSTR2("-- DELETED --"));
   display.display();
   }
+  void screens::FavSel(uint8_t favchan) 
+ {
+  reset(); // start from fresh screen.
+  drawTitleBox(PSTR2("SELECTED FAVORITE CH")); 
+  display.setTextSize(5);
+  display.setTextColor(WHITE);
+  display.setCursor(20, 20);
+  display.print(favchan);
+  
+   display.display();
+   reset();
+   reset();
+ }
  void screens::NoFav(uint8_t state) 
  {
   reset(); // start from fresh screen.
   drawTitleBox(PSTR2("FAVORITES"));
-
 
   display.setTextSize(3);
   display.setTextColor(WHITE);
