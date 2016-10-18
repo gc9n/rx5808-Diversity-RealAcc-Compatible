@@ -1,6 +1,6 @@
 /*
  * Screens Class by Shea Ivey
-
+ * Mods George Chatzisavvidis 
 The MIT License (MIT)
 
 Copyright (c) 2015 Shea Ivey
@@ -59,9 +59,10 @@ class screens
         void updateSeekMode(uint8_t state, uint8_t channelIndex, uint8_t channel, uint8_t rssi, uint16_t channelFrequency, uint8_t rssi_seek_threshold, bool locked); // seek and manual mode
 
           // FAVORITES & MANUAL MODE
-        void FavMode(uint8_t state); // fav
+        void FavMode(uint8_t state,uint8_t lfavs); // fav
+        void NoFav(uint8_t state); // fav
         void updateFavMode(uint8_t state, uint8_t channelIndex, uint8_t channel, uint8_t rssi, uint16_t channelFrequency, uint8_t rssi_seek_threshold, bool locked); // fav
-
+        void FavDelete( uint16_t channelFrequency, uint8_t channel);
 
         // BAND SCAN
         void bandScanMode(uint8_t state);
