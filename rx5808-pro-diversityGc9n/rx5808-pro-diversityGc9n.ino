@@ -561,7 +561,7 @@ void loop()
                     EEPROM.write(EEPROM_ADR_TUNE_FAV_LAST,lfav);
  
                   }
-                for(int i = 1; i<=10; i++)
+                for(int i = 0; i<10; i++)
                 {
                       if ( EEPROM.read(EEPROM_ADR_TUNE_FAV[i]) == 255) //not used  gc9n
                       {
@@ -711,7 +711,7 @@ void loop()
           
           EEPROM.write(EEPROM_ADR_STATE,STATE_FAVORITE);
           HaveFav=false;
-          for(int i = 1; i<=10; i++)
+          for(int i = 0; i<10; i++)
                 {
                   //NoFav
                       if (EEPROM.read(EEPROM_ADR_TUNE_FAV[i])!=255)
