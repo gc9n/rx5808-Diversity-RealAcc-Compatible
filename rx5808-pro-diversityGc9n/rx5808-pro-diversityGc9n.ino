@@ -715,7 +715,7 @@ void loop()
                 {
                   //NoFav
                       if (EEPROM.read(EEPROM_ADR_TUNE_FAV[i])!=255)
-                      {  FirstFav=i;
+                      {  FirstFav=i+1;
                         HaveFav=true;
                         }
                 }
