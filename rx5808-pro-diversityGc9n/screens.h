@@ -65,6 +65,7 @@ class screens
         void updateFavMode(uint8_t state, uint8_t channelIndex, uint8_t channel, uint8_t rssi, uint16_t channelFrequency, uint8_t rssi_seek_threshold, bool locked); // fav
         void FavDelete( uint16_t channelFrequency, uint8_t channel);
         void FavSel(uint8_t favchan); // fav
+        void FavReorg(uint8_t favchan); // fav
         
         // BAND SCAN
         void bandScanMode(uint8_t state);
