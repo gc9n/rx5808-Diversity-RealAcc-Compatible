@@ -251,12 +251,13 @@ void screens::FavDelete( uint16_t channelFrequency, uint8_t channel)
   display.setCursor(85, 8 * 2 + 4);
   display.print(channel);
 
-   display.setCursor(((display.width() - 11 * 6) / 2), 8 * 6 + 4);
+  display.setCursor(((display.width() - 11 * 6) / 2), 8 * 6 + 4);
   display.print(PSTR2("-- DELETED --"));
   display.display();
   }
-  void screens::FavSel(uint8_t favchan) 
- {
+
+ void screens::FavSel(uint8_t favchan) 
+ {//gc9n
   reset(); // start from fresh screen.
   drawTitleBox(PSTR2("SELECTED FAVORITE CH")); 
   display.setTextSize(5);
@@ -268,6 +269,26 @@ void screens::FavDelete( uint16_t channelFrequency, uint8_t channel)
    reset();
    reset();
  }
+
+ void screens::FavReorg(uint8_t favchan) 
+ {//gc9n
+  reset(); // start from fresh screen.
+  drawTitleBox(PSTR2("REORGANIZING")); 
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(5, 8 * 2 + 4);
+  display.print(PSTR2("REORGANIZING FAV/ES "));
+   display.setCursor(((display.width() - 11 * 6) / 2), 8 * 4 + 4);
+  display.print(PSTR2("TOTAL FAV/ES="));
+  display.print(favchan);
+
+  display.display();
+  reset();
+  reset();
+  delay(1500);
+ }
+
+ 
  void screens::NoFav(uint8_t state) 
  {
   reset(); // start from fresh screen.
