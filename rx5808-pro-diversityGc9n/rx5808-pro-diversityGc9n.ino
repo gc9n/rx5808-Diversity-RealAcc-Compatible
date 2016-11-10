@@ -64,8 +64,8 @@ screens drawScreen;
 #define EEPROM_ADR_TUNE_FAV_LAST 108
 #define EEPROM_ADR_TUNE_FAV_LAST_SEARCH 109
 int EEPROM_ADR_TUNE_FAV[10]  = {100, 101, 102, 103, 104, 105, 106,107,110,111};
-
-//setting the 8 favorite channels memory blocks George Chatzisavvidis GC9N
+int temp_EEPROM_ADR_TUNE_FAV[10]  = {255, 255, 255, 255, 255, 255, 255,255,255,255};
+//setting the 10 favorite channels memory blocks George Chatzisavvidis GC9N
 
 
 
@@ -287,8 +287,8 @@ void setup()
 #endif
     // Setup Done - Turn Status LED off.
     digitalWrite(led, LOW);
- 
 }
+ 
 
 // LOOP ----------------------------------------------------------------------------
 
@@ -382,7 +382,7 @@ void loop()
             } // end switch
 
             // draw mode select screen
-            //Serial.println (state);
+            ////Serial.println (state);
             if (menu_id>4) 
             {drawScreen.mainMenuSecondPage(menu_id);}
             else
@@ -544,19 +544,19 @@ void loop()
  
             if (last_state!=STATE_SETUP_MENU  && state_last_used!=STATE_FAVORITE ) // if you didnt came from menu setup  save favorite
             {
-                // Serial.println("bike sto vasiko");
+                // //Serial.println("bike sto vasiko");
                  if ( EEPROM.read(EEPROM_ADR_TUNE_FAV[10]) != 255) //ALL FAVS full gc9n
                   {
                     int lfav;
                     lfav=EEPROM.read(EEPROM_ADR_TUNE_FAV_LAST);
-                    if (lfav==10)
+                    if (lfav<10)
                     {
-                      lfav=1;
+                      lfav=0;
                     }
                     else
                     {
                       lfav=lfav+1;
-                      }
+                    }
                     EEPROM.write(EEPROM_ADR_TUNE_FAV[lfav],255); // rotate the favs if full
                     EEPROM.write(EEPROM_ADR_TUNE_FAV_LAST,lfav);
  
@@ -571,7 +571,7 @@ void loop()
                       }
                 }
 
-                drawScreen.save(state_last_used, channelIndex, pgm_read_word_near(channelFreqTable + channelIndex), call_sign,EEPROM.read(EEPROM_ADR_TUNE_FAV_LAST));
+                drawScreen.save(state_last_used, channelIndex, pgm_read_word_near(channelFreqTable + channelIndex), call_sign,EEPROM.read(EEPROM_ADR_TUNE_FAV_LAST)+1);
             }
             if (last_state==STATE_SETUP_MENU)
             {  
@@ -580,14 +580,36 @@ void loop()
             }
 
             ///LONG PRESS IN FAVORITES WILL DELETE THE CURRENT FAVORITE CHANNEL
-            if  (state_last_used==STATE_FAVORITE )    
+            if  (state_last_used==STATE_FAVORITE && last_state==255)    
             {
-              
               EEPROM.write(EEPROM_ADR_TUNE_FAV[lfavs],255);
-              drawScreen.FavDelete(   pgm_read_word_near(channelFreqTable + channelIndex), lfavs);
+              drawScreen.FavDelete(   pgm_read_word_near(channelFreqTable + channelIndex), lfavs+1);
               RefreshFav=false;
+              for(int i = 0; i<10; i++) {temp_EEPROM_ADR_TUNE_FAV[i] =255;   }  //empty temp
+              //--REORGANIZE FAVS
+                  byte MaxFav=0;
+                  for(int i = 0; i<10; i++)
+                    { 
+                            
+                        if ( EEPROM.read(EEPROM_ADR_TUNE_FAV[i]) != 255) //not used  gc9n
+                        {
+                          FillTemp_Tune_fav(EEPROM.read(EEPROM_ADR_TUNE_FAV[i]));
+                          MaxFav++;
+                        }                         
+                      }
+
+               
+                       for(int i = 0; i<10; i++)
+                        {
+                          EEPROM.write(EEPROM_ADR_TUNE_FAV[i],temp_EEPROM_ADR_TUNE_FAV[i] );   
+                          RefreshFav=false;
+                        }
+                        beep(100); // beep
+                         delay(1000);
+                        drawScreen.FavReorg(MaxFav);
+                    
             }
-              
+           ///END LONG PRESS IN FAVORITES WILL DELETE THE CURRENT FAVORITE CHANNEL
                 for (uint8_t loop=0;loop<5;loop++)
                 {
                     beep(100); // beep
@@ -698,13 +720,12 @@ void loop()
     /*****************************************/
     if(state == STATE_FAVORITE )//|| state == STATE_SEEK)
     { 
-
         // read rssi
         wait_rssi_ready();
         rssi = readRSSI();
         rssi_best = (rssi > rssi_best) ? rssi : rssi_best;
         
-//         //Serial.println ("---------------START");
+////Serial.println ("---------------START");
          
          if (!RefreshFav)
          {
@@ -713,34 +734,30 @@ void loop()
           HaveFav=false;
           for(int i = 0; i<10; i++)
                 {
-                  //NoFav
+                      //NoFav
                       if (EEPROM.read(EEPROM_ADR_TUNE_FAV[i])!=255)
-                      {  FirstFav=i+1;
+                      {  FirstFav=i;
                         HaveFav=true;
                         }
                 }
                 RefreshFav=true;
         //channel=channel_from_index(channelIndex); // get 0...48 index depending of current channel
-         }
- 
-           // handling of keys
+         }  // handling of keys
             if( digitalRead(buttonUp) == LOW)        // channel UP
             { 
               delay(KEY_DEBOUNCE); // debounce
                   lfavs++; 
-                  if (lfavs>10)
-                  {lfavs=FirstFav;}
+                  if (lfavs>FirstFav){lfavs=0;}
                  //Serial.println  ("UPEEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) "); 
                  //Serial.print  (EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) );
                  //Serial.print  (" lfavs"); 
-                 // Serial.println  (lfavs );
-               
+                 //Serial.println  (lfavs );
+                  //Serial.print  (" FirstFav"); 
+                 //Serial.println  (FirstFav );
                     channelIndex=EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) ;
                     if (channelIndex!=255)
                      { 
-                      
-                    
-                        drawScreen.FavSel(lfavs);
+                        drawScreen.FavSel(lfavs+1);
                         channel=channel_from_index(channelIndex); // get 0...48 index depending of current channel
                         time_screen_saver=millis();
                         beep(50); // beep & debounce
@@ -752,11 +769,12 @@ void loop()
                         }   
                         drawScreen.seekMode(state);
                         EEPROM.write(EEPROM_ADR_TUNE,channelIndex);
-                        Serial.println(channelIndex);
+                        //Serial.println(channelIndex);
                     }
                       else
-                    {lfavs--;}
-                 
+                    {
+                    lfavs--;
+                      }
             }
 
  
@@ -766,13 +784,13 @@ void loop()
                
                 delay(KEY_DEBOUNCE); // debounce
                 lfavs--;
-                 if (lfavs<=0)
+                 if (lfavs<0)
                 {lfavs=FirstFav;}
     
                 channelIndex=EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) ;
                  if (channelIndex!=255)
                 {   
-                    drawScreen.FavSel(lfavs);
+                    drawScreen.FavSel(lfavs+1);
                     channel=channel_from_index(channelIndex); // get 0...48 index depending of current channel
                     time_screen_saver=millis();
                     beep(50); // beep & debounce
@@ -1451,4 +1469,17 @@ void SERIAL_ENABLE_HIGH()
   delayMicroseconds(1);
   digitalWrite(slaveSelectPin, HIGH);
   delayMicroseconds(1);
+}
+
+
+void FillTemp_Tune_fav(int FavChannelx) {
+        for(int i = 0; i<10; i++)
+                {
+                    if ( temp_EEPROM_ADR_TUNE_FAV[i] == 255 && FavChannelx != 255) //not used  gc9n
+                    {
+                      temp_EEPROM_ADR_TUNE_FAV[i]=FavChannelx;
+                      i=12;
+                    }
+                   
+                }
 }
