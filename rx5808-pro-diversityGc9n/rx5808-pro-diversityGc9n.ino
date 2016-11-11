@@ -830,9 +830,8 @@ void loop()
         else
         {
           //delay(KEY_DEBOUNCE); // debounce
-          //state = STATE_SCREEN_SAVER;
-           drawScreen.screenSaver(diversity_mode, pgm_read_byte_near(channelNames + channelIndex), pgm_read_word_near(channelFreqTable + channelIndex), call_sign);
-          // drawScreen.updateScreenSaver(active_receiver, rssi, readRSSI(useReceiverA), readRSSI(useReceiverB));
+           state = STATE_SCREEN_SAVER;
+         
         }// IF YOU HAVE FAVS
      
     }
