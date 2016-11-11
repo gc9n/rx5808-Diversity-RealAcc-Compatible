@@ -28,7 +28,7 @@ SOFTWARE.
 #define settings_h
 
 
-#define Debug
+//#define Debug
 
 
 // Choose the display you will be using
