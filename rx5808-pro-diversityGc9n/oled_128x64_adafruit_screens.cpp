@@ -26,7 +26,7 @@
 */
 
 #include "settings.h"
-
+#include <avr/pgmspace.h>
 #ifdef OLED_128x64_ADAFRUIT_SCREENS
 #include "screens.h" // function headers
 #ifdef SH1106
@@ -278,7 +278,7 @@ void screens::FavDelete( uint16_t channelFrequency, uint8_t channel)
   display.setTextColor(WHITE);
   display.setCursor(5, 8 * 2 + 4);
   display.print(PSTR2("REORGANIZING FAV/ES "));
-   display.setCursor(((display.width() - 11 * 6) / 2), 8 * 4 + 4);
+  display.setCursor(((display.width() - 11 * 6) / 2), 8 * 4 + 4);
   display.print(PSTR2("TOTAL FAV/ES="));
   display.print(favchan);
 
@@ -300,43 +300,42 @@ void screens::FavDelete( uint16_t channelFrequency, uint8_t channel)
   display.print("EMPTY");
   display.display();
  }
-void screens::FavMode(uint8_t state ,uint8_t lfavs) {
-  last_channel = -1;
-  reset(); // start from fresh screen.
-  if (state == STATE_FAVORITE)
-  {
-    drawTitleBox(PSTR2("FAVORITES "));
-    
-    
-  }
-  else if (state == STATE_SEEK)
-  {
-    drawTitleBox(PSTR2("AUTO SEEK MODE"));
-  }
-  display.setTextColor(WHITE);
-  display.drawLine(0, 20, display.width(), 20, WHITE);
-  display.drawLine(0, 32, display.width(), 32, WHITE);
-  display.setCursor(5, 12);
-  display.drawLine(97, 11, 97, 20, WHITE);
-  display.print(PSTR2("BAND:"));
-  for (uint16_t i = 0; i < 8; i++) {
-    display.setCursor(15 * i + 8, 23);
-    display.print((char) (i + '1'));
-  }
-  display.drawLine(0, 36, display.width(), 36, WHITE);
-  display.drawLine(0, display.height() - 11, display.width(), display.height() - 11, WHITE);
-  display.setCursor(2, display.height() - 9);
-#ifdef USE_LBAND
-  display.print(PSTR2("5362"));
-#else
-  display.print(PSTR2("5645"));
-#endif
-  display.setCursor(55, display.height() - 9);
-  display.print(PSTR2("5800"));
-  display.setCursor(display.width() - 25, display.height() - 9);
-  display.print(PSTR2("5945"));
-  display.display();
-}
+//void screens::FavMode(uint8_t state ,uint8_t lfavs) {
+//  last_channel = -1;
+//  reset(); // start from fresh screen.
+//  if (state == STATE_FAVORITE)
+//  {
+//    drawTitleBox(PSTR2("FAVORITES "));
+//       
+//  }
+//  else if (state == STATE_SEEK)
+//  {
+//    drawTitleBox(PSTR2("AUTO SEEK MODE"));
+//  }
+//  display.setTextColor(WHITE);
+//  display.drawLine(0, 20, display.width(), 20, WHITE);
+//  display.drawLine(0, 32, display.width(), 32, WHITE);
+//  display.setCursor(5, 12);
+//  display.drawLine(97, 11, 97, 20, WHITE);
+//  display.print(PSTR2("BAND:"));
+//  for (uint16_t i = 0; i < 8; i++) {
+//    display.setCursor(15 * i + 8, 23);
+//    display.print((char) (i + '1'));
+//  }
+//  display.drawLine(0, 36, display.width(), 36, WHITE);
+//  display.drawLine(0, display.height() - 11, display.width(), display.height() - 11, WHITE);
+//  display.setCursor(2, display.height() - 9);
+//#ifdef USE_LBAND
+//  display.print(PSTR2("5362"));
+//#else
+//  display.print(PSTR2("5645"));
+//#endif
+//  display.setCursor(55, display.height() - 9);
+//  display.print(PSTR2("5800"));
+//  display.setCursor(display.width() - 25, display.height() - 9);
+//  display.print(PSTR2("5945"));
+//  display.display();
+//}
 
 
 char scan_position = 3;
@@ -423,7 +422,7 @@ void screens::updateSeekMode(uint8_t state, uint8_t channelIndex, uint8_t channe
 #endif
 
     rssi_scaled = map(rssi_seek_threshold, 1, 100, 1, 14);
-
+    
     display.fillRect(1, display.height() - 12 - 14, 2, 14, BLACK);
     display.drawLine(1, display.height() - 12 - rssi_scaled, 2, display.height() - 12 - rssi_scaled, WHITE);
     display.fillRect(display.width() - 3, display.height() - 12 - 14, 2, 14, BLACK);
@@ -550,27 +549,30 @@ void screens::screenSaver(uint8_t diversity_mode, uint8_t channelName, uint16_t 
   display.print(channelFrequency);
   display.setTextSize(1);
 #ifdef USE_DIVERSITY
-  if (isDiversity()) {
+  if (isDiversity()) 
+  {
     display.setCursor(70, 18);
-    switch (diversity_mode) {
+    switch (diversity_mode) 
+    {
       case useReceiverAuto:
         display.print(PSTR2("AUTO"));
         break;
       case useReceiverA:
-        display.print(PSTR2("ANTENNA A"));
+        display.print(PSTR2("ANT A"));
         break;
       case useReceiverB:
-        display.print(PSTR2("ANTENNA B"));
+        display.print(PSTR2("ANT B"));
         break;
     }
     display.setTextColor(BLACK, WHITE);
     display.fillRect(0, display.height() - 19, 7, 9, WHITE);
+    
     display.setCursor(1, display.height() - 18);
-    display.print("A");
+    display.print(PSTR2("A"));
     display.setTextColor(BLACK, WHITE);
     display.fillRect(0, display.height() - 9, 7, 9, WHITE);
     display.setCursor(1, display.height() - 8);
-    display.print("B");
+    display.print(PSTR2("B"));
   }
 #endif
   display.display();
@@ -578,7 +580,7 @@ void screens::screenSaver(uint8_t diversity_mode, uint8_t channelName, uint16_t 
 
 void screens::updateScreenSaver(uint8_t rssi) {
   updateScreenSaver(-1, rssi, -1, -1);
-}
+ }
 void screens::updateScreenSaver(char active_receiver, uint8_t rssi, uint8_t rssiA, uint8_t rssiB) {
 #ifdef USE_DIVERSITY
   if (isDiversity()) {
@@ -707,7 +709,7 @@ void screens::updateDiversity(char active_receiver, uint8_t rssiA, uint8_t rssiB
 
 void screens::setupMenu() {
 }
-void screens::updateSetupMenu(uint8_t menu_id, bool settings_beeps, bool settings_orderby_channel, const char *call_sign, char editing) {
+void screens::updateSetupMenu(uint8_t menu_id, bool settings_beeps, bool settings_orderby_channel, const char *call_sign  , char editing) {
   reset();
   drawTitleBox(PSTR2("SETUP MENU"));
   //selected
