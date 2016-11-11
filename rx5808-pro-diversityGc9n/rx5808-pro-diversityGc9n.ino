@@ -40,31 +40,31 @@ SOFTWARE.
 
 #include "settings.h"
 
+
 // uncomment depending on the display you are using.
 // this is an issue with the arduino preprocessor
  
 #ifdef OLED_128x64_ADAFRUIT_SCREENS
 
   #ifdef SH1106
-    #include <Adafruit_SH1106.h>
-  #else
+   #include <Adafruit_SH1106.h>
+ #else
     #include <Adafruit_SSD1306.h>
-  #endif
+ #endif
     #include <Adafruit_GFX.h>
     #include <Wire.h>
     #include <SPI.h>
 #endif
-#ifdef OLED_128x64_U8G_SCREENS
+//#ifdef OLED_128x64_U8G_SCREENS
 //    #include <U8glib.h>
-#endif
-//const byte PARTHENIA = 0x92;
+//#endif
 #include "screens.h"
 screens drawScreen;
 
 #define EEPROM_ADR_TUNE_FAV_LAST 108
-#define EEPROM_ADR_TUNE_FAV_LAST_SEARCH 109
+
 int EEPROM_ADR_TUNE_FAV[10]  = {100, 101, 102, 103, 104, 105, 106,107,110,111};
-int temp_EEPROM_ADR_TUNE_FAV[10]  = {255, 255, 255, 255, 255, 255, 255,255,255,255};
+int temp_EEPROM_ADR_TUNE_FAV[10] = {255, 255, 255, 255, 255, 255, 255,255,255,255};
 //setting the 10 favorite channels memory blocks George Chatzisavvidis GC9N
 
 
@@ -171,12 +171,18 @@ bool settings_orderby_channel = true;
 bool HaveFav = false;
 bool RefreshFav = false;
 uint8_t FirstFav =0;
-bool FATSHARK_BUTTON_PUSHED=false;
-int  LAST_FATSHARK_BUTTON_STATE=0;
+//bool FATSHARK_BUTTON_PUSHED=false;
+//int  LAST_FATSHARK_BUTTON_STATE=0;
 int lfavs=0;
 // SETUP ----------------------------------------------------------------------------
 void setup()
-{ Serial.begin(9600);
+{ 
+  
+  #ifdef Debug
+  //Serial.begin(9600);
+  #endif
+  
+    //
     // IO INIT
     // initialize digital pin 13 LED as an output.
     pinMode(led, OUTPUT); // status pin for TV mode errors
@@ -541,11 +547,11 @@ void loop()
             #ifdef USE_DIVERSITY
                             EEPROM.write(EEPROM_ADR_DIVERSITY,diversity_mode);
             #endif
- 
+
+            ///////////////////////FAVORITIES SAVE Gc9n
             if (last_state!=STATE_SETUP_MENU  && state_last_used!=STATE_FAVORITE ) // if you didnt came from menu setup  save favorite
             {
-                // //Serial.println("bike sto vasiko");
-                 if ( EEPROM.read(EEPROM_ADR_TUNE_FAV[10]) != 255) //ALL FAVS full gc9n
+                if ( EEPROM.read(EEPROM_ADR_TUNE_FAV[10]) != 255) //ALL FAVS full gc9n
                   {
                     int lfav;
                     lfav=EEPROM.read(EEPROM_ADR_TUNE_FAV_LAST);
@@ -559,8 +565,7 @@ void loop()
                     }
                     EEPROM.write(EEPROM_ADR_TUNE_FAV[lfav],255); // rotate the favs if full
                     EEPROM.write(EEPROM_ADR_TUNE_FAV_LAST,lfav);
- 
-                  }
+                   }
                 for(int i = 0; i<10; i++)
                 {
                       if ( EEPROM.read(EEPROM_ADR_TUNE_FAV[i]) == 255) //not used  gc9n
@@ -575,7 +580,6 @@ void loop()
             }
             if (last_state==STATE_SETUP_MENU)
             {  
-              
              drawScreen.save(state_last_used, channelIndex, pgm_read_word_near(channelFreqTable + channelIndex), call_sign,-99);
             }
 
@@ -584,9 +588,10 @@ void loop()
             {
               EEPROM.write(EEPROM_ADR_TUNE_FAV[lfavs],255);
               drawScreen.FavDelete(   pgm_read_word_near(channelFreqTable + channelIndex), lfavs+1);
-              RefreshFav=false;
+               
               for(int i = 0; i<10; i++) {temp_EEPROM_ADR_TUNE_FAV[i] =255;   }  //empty temp
-              //--REORGANIZE FAVS
+              
+              //--REORGANIZE FAVS  GC9n
                   byte MaxFav=0;
                   for(int i = 0; i<10; i++)
                     { 
@@ -602,12 +607,20 @@ void loop()
                        for(int i = 0; i<10; i++)
                         {
                           EEPROM.write(EEPROM_ADR_TUNE_FAV[i],temp_EEPROM_ADR_TUNE_FAV[i] );   
-                          RefreshFav=false;
+                         
                         }
                         beep(100); // beep
-                         delay(1000);
+                        
+                        //DELETED SUCCESFULLY AND GO TO FIRST FAV (IF EXISTS)
                         drawScreen.FavReorg(MaxFav);
-                    
+                        RefreshFav=false;
+                        delay(500);
+                        EEPROM.write(EEPROM_ADR_TUNE_FAV_LAST,0);
+                        channelIndex=EEPROM.read(EEPROM_ADR_TUNE_FAV[0]) ;
+                        drawScreen.FavSel(1);
+                        channel=channel_from_index(channelIndex);
+                        EEPROM.write(EEPROM_ADR_TUNE,channelIndex);
+                        //drawScreen.screenSaver(diversity_mode, pgm_read_byte_near(channelNames + channelIndex), pgm_read_word_near(channelFreqTable + channelIndex), call_sign);
             }
            ///END LONG PRESS IN FAVORITES WILL DELETE THE CURRENT FAVORITE CHANNEL
                 for (uint8_t loop=0;loop<5;loop++)
@@ -632,7 +645,7 @@ void loop()
                     time_screen_saver=0; // dont show screen saver until we found a channel.
                 }
                 
-                drawScreen.FavMode(state,FirstFav);
+                //drawScreen.FavMode(state,FirstFav);
 
                 // return user to their saved channel after bandscan
                 if(state_last_used == STATE_SCAN ||state_last_used == STATE_FAVORITE  || last_state == STATE_RSSI_SETUP) {
@@ -741,19 +754,19 @@ void loop()
                         }
                 }
                 RefreshFav=true;
-        //channel=channel_from_index(channelIndex); // get 0...48 index depending of current channel
+               //channel=channel_from_index(channelIndex); // get 0...48 index depending of current channel
          }  // handling of keys
             if( digitalRead(buttonUp) == LOW)        // channel UP
             { 
               delay(KEY_DEBOUNCE); // debounce
                   lfavs++; 
                   if (lfavs>FirstFav){lfavs=0;}
-                 //Serial.println  ("UPEEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) "); 
-                 //Serial.print  (EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) );
-                 //Serial.print  (" lfavs"); 
-                 //Serial.println  (lfavs );
-                  //Serial.print  (" FirstFav"); 
-                 //Serial.println  (FirstFav );
+//                 Serial.println  ("UPEEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) "); 
+//                 Serial.print  (EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) );
+//                 Serial.print  (" lfavs"); 
+//                 Serial.println  (lfavs );
+//                 Serial.print  (" FirstFav"); 
+//                 Serial.println  (FirstFav );
                     channelIndex=EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) ;
                     if (channelIndex!=255)
                      { 
@@ -767,7 +780,7 @@ void loop()
                         {
                             channelIndex = CHANNEL_MIN_INDEX;
                         }   
-                        drawScreen.seekMode(state);
+                       // drawScreen.seekMode(state);
                         EEPROM.write(EEPROM_ADR_TUNE,channelIndex);
                         //Serial.println(channelIndex);
                     }
@@ -802,7 +815,7 @@ void loop()
                         channelIndex = CHANNEL_MAX_INDEX;
                     }
                   
-                  drawScreen.seekMode(state);
+                  //drawScreen.seekMode(state);
                   EEPROM.write(EEPROM_ADR_TUNE,channelIndex);
                 }
                 else
@@ -812,11 +825,15 @@ void loop()
         if (HaveFav==false)
         {drawScreen.NoFav(state);
         
-        }   // IF YOU DINT HAVE FAVS
+        }   // IF YOU DONT HAVE FAVS
 
-        
         else
-        {drawScreen.updateSeekMode(state, channelIndex, channel, rssi, pgm_read_word_near(channelFreqTable + channelIndex), rssi_seek_threshold, seek_found);}// IF YOU HAVE FAVS
+        {
+          //delay(KEY_DEBOUNCE); // debounce
+          //state = STATE_SCREEN_SAVER;
+           drawScreen.screenSaver(diversity_mode, pgm_read_byte_near(channelNames + channelIndex), pgm_read_word_near(channelFreqTable + channelIndex), call_sign);
+          // drawScreen.updateScreenSaver(active_receiver, rssi, readRSSI(useReceiverA), readRSSI(useReceiverB));
+        }// IF YOU HAVE FAVS
      
     }
 
@@ -1220,6 +1237,14 @@ uint16_t readRSSI(char receiver)
 #ifdef USE_DIVERSITY
         rssiB += analogRead(rssiPinB);//random(RSSI_MAX_VAL-200, RSSI_MAX_VAL);//
 #endif
+
+#ifdef Debug
+  rssiB +=  random(RSSI_MAX_VAL-200, RSSI_MAX_VAL);//
+
+  rssiA +=  random(RSSI_MAX_VAL-50, RSSI_MAX_VAL);
+   
+#endif
+
     }
     rssiA = rssiA/RSSI_READS; // average of RSSI_READS readings
 
