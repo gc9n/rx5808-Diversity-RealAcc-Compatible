@@ -23,9 +23,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
+#include <avr/pgmspace.h>
 #ifndef settings_h
 #define settings_h
+
+
+#define Debug
+
 
 // Choose the display you will be using
 // you will also have to uncomment the includes in the main project.
@@ -127,7 +131,7 @@ SOFTWARE.
 #define STATE_FAVORITE 9 //gc9n
 
 // Seconds to wait before force entering screensaver
-#define SCREENSAVER_TIMEOUT 30
+#define SCREENSAVER_TIMEOUT 10
 
 #define START_STATE STATE_SEEK
 #define MAX_STATE STATE_MANUAL
