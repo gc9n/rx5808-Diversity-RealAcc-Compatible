@@ -47,7 +47,7 @@ SOFTWARE.
 #ifdef OLED_128x64_ADAFRUIT_SCREENS
 
   #ifdef SH1106
-   #include <Adafruit_SH1106.h>
+  // #include <Adafruit_SH1106.h>
  #else
     #include <Adafruit_SSD1306.h>
  #endif
@@ -1240,7 +1240,7 @@ uint16_t readRSSI(char receiver)
 #ifdef Debug
   rssiB +=  random(RSSI_MAX_VAL-200, RSSI_MAX_VAL);//
 
-  rssiA +=  random(RSSI_MAX_VAL-50, RSSI_MAX_VAL);
+ // rssiA +=  random(RSSI_MAX_VAL-50, RSSI_MAX_VAL);
    
 #endif
 
