@@ -60,9 +60,8 @@ class screens
         void updateSeekMode(uint8_t state, uint8_t channelIndex, uint8_t channel, uint8_t rssi, uint16_t channelFrequency, uint8_t rssi_seek_threshold, bool locked); // seek and manual mode
 
           // FAVORITES & MANUAL MODE
-        //void FavMode(uint8_t state,uint8_t lfavs); // fav
+      
         void NoFav(uint8_t state); // fav
-        
         void FavDelete( uint16_t channelFrequency, uint8_t channel);
         void FavSel(uint8_t favchan); // fav
         void FavReorg(uint8_t favchan); // fav
