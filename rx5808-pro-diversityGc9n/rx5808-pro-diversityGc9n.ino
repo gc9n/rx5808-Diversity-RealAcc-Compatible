@@ -551,11 +551,11 @@ void loop()
             ///////////////////////FAVORITIES SAVE Gc9n
             if (last_state!=STATE_SETUP_MENU  && state_last_used!=STATE_FAVORITE ) // if you didnt came from menu setup  save favorite
             {
-                if ( EEPROM.read(EEPROM_ADR_TUNE_FAV[10]) != 255) //ALL FAVS full gc9n
+                if ( EEPROM.read(EEPROM_ADR_TUNE_FAV[9]) != 255) //ALL FAVS full gc9n
                   {
                     int lfav;
                     lfav=EEPROM.read(EEPROM_ADR_TUNE_FAV_LAST);
-                    if (lfav<10)
+                    if (lfav==9)
                     {
                       lfav=0;
                     }
@@ -592,7 +592,7 @@ void loop()
               for(int i = 0; i<10; i++) {temp_EEPROM_ADR_TUNE_FAV[i] =255;   }  //empty temp
               
               //--REORGANIZE FAVS  GC9n
-                  byte MaxFav=0;
+                  int MaxFav=0;
                   for(int i = 0; i<10; i++)
                     { 
                             
@@ -614,12 +614,16 @@ void loop()
                         //DELETED SUCCESFULLY AND GO TO FIRST FAV (IF EXISTS)
                         drawScreen.FavReorg(MaxFav);
                         RefreshFav=false;
-                        delay(500);
+                        delay(300);
                         EEPROM.write(EEPROM_ADR_TUNE_FAV_LAST,0);
+                         channelIndex=EEPROM.read(EEPROM_ADR_TUNE_FAV[0]) ;
+                         lfavs=0;
                         channelIndex=EEPROM.read(EEPROM_ADR_TUNE_FAV[0]) ;
                         drawScreen.FavSel(1);
                         channel=channel_from_index(channelIndex);
                         EEPROM.write(EEPROM_ADR_TUNE,channelIndex);
+                        
+                        
                         //drawScreen.screenSaver(diversity_mode, pgm_read_byte_near(channelNames + channelIndex), pgm_read_word_near(channelFreqTable + channelIndex), call_sign);
             }
            ///END LONG PRESS IN FAVORITES WILL DELETE THE CURRENT FAVORITE CHANNEL
@@ -751,6 +755,7 @@ void loop()
                       if (EEPROM.read(EEPROM_ADR_TUNE_FAV[i])!=255)
                       {  FirstFav=i;
                         HaveFav=true;
+                         
                         }
                 }
                 RefreshFav=true;
@@ -761,12 +766,6 @@ void loop()
               delay(KEY_DEBOUNCE); // debounce
                   lfavs++; 
                   if (lfavs>FirstFav){lfavs=0;}
-//                 Serial.println  ("UPEEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) "); 
-//                 Serial.print  (EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) );
-//                 Serial.print  (" lfavs"); 
-//                 Serial.println  (lfavs );
-//                 Serial.print  (" FirstFav"); 
-//                 Serial.println  (FirstFav );
                     channelIndex=EEPROM.read(EEPROM_ADR_TUNE_FAV[lfavs]) ;
                     if (channelIndex!=255)
                      { 
