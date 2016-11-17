@@ -324,7 +324,7 @@ void loop()
         #define MAX_MENU 5
         #define MENU_Y_SIZE 15
 
-        char menu_id=state_last_used-1;
+        char menu_id=2;//state_last_used-1;
         // Show Mode Screen
         if(state==STATE_SEEK_FOUND)
         {
@@ -390,7 +390,9 @@ void loop()
             // draw mode select screen
             ////Serial.println (state);
             if (menu_id>4) 
-            {drawScreen.mainMenuSecondPage(menu_id);}
+            {
+              drawScreen.mainMenuSecondPage(menu_id-5);
+            }
             else
             {
               drawScreen.mainMenu(menu_id);
