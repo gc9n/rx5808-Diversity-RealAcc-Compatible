@@ -1336,13 +1336,21 @@ void setReceiver(uint8_t receiver) {
 #ifdef USE_DIVERSITY
     if(receiver == useReceiverA)
     {
+        #ifdef USE_FAST_SWITCHING
+        PORTC = (PORTC & B11111101) | B00000001; //This turns off receiverB_led and turns on receiverA_led simultaniously, this does however breaks the adaptability of receiverA_led/receiverB_led in settings.h
+        #else
         digitalWrite(receiverB_led, LOW);
         digitalWrite(receiverA_led, HIGH);
+        #endif
     }
     else
     {
+        #ifdef USE_FAST_SWITCHING
+        PORTC = (PORTC & B11111110) | B00000010; //This turns off receiverA_led and turns on receiverB_led simultaniously
+        #else
         digitalWrite(receiverA_led, LOW);
         digitalWrite(receiverB_led, HIGH);
+        #endif
     }
 #else
     digitalWrite(receiverA_led, HIGH);
