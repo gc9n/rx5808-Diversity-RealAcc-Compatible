@@ -106,7 +106,7 @@ SOFTWARE.
 
 #define led 13
 // number of analog rssi reads to average for the current check.
-#define RSSI_READS 50
+#define RSSI_READS 10
 // RSSI default raw range
 #define RSSI_MIN_VAL 90
 #define RSSI_MAX_VAL 220
