@@ -68,6 +68,8 @@ SOFTWARE.
 
 // Receiver PINS
 #define receiverA_led A0
+//Feature fast switching breaks the changeability of receiverA_led and receiverB_led, only to be used when receiverA_led = A0 and receiverB_led = A1
+#define USE_FAST_SWITCHING
 #define rssiPinA A6
 
 #define useReceiverA 1
