@@ -1232,9 +1232,13 @@ uint16_t readRSSI(char receiver)
 #endif
     for (uint8_t i = 0; i < RSSI_READS; i++)
     {
+#ifdef USE_DIVERSITY
+        analogRead(rssiPinA);
+#endif        
         rssiA += analogRead(rssiPinA);//random(RSSI_MAX_VAL-200, RSSI_MAX_VAL);//
 
 #ifdef USE_DIVERSITY
+        analogRead(rssiPinB);
         rssiB += analogRead(rssiPinB);//random(RSSI_MAX_VAL-200, RSSI_MAX_VAL);//
 #endif
 
