@@ -14,4 +14,4 @@ Added extra features with Favorites tab
 
 If this project help you reduce time to develop, you can give me a cup of coffee :)
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)]gchatzisavvidis@gmail.com
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](gchatzisavvidis@gmail.com)
