@@ -34,7 +34,7 @@ After that little mod that makes my goggles more “healthier” from damaging t
 http://www.alldatasheet.com/datasheet-pdf/pdf/31368/TOSHIBA/78M05.html
 
 <h1>INSTRUCTIONS  FOR THE SOFTWARE </h1>
- Download the https://github.com/gc9n/rx5808-Diversity-RealAcc-Compatible/releases/download/untagged-650498ddec104433cd70/MICRO.MINIM.OSD.SOFTWARE.zip
+ Download the https://github.com/gc9n/rx5808-Diversity-RealAcc-Compatible/releases/download/V2.0/MICRO.MINIM.OSD.SOFTWARE.zip
 
 <h2>Preparation for MicroMinim OSD</h2>
 <h3>Fonts</h3>
