@@ -27,9 +27,7 @@ SOFTWARE.
 
 #ifndef display_h
 #define display_h
-
-
-#include <avr/pgmspace.h>
+ 
 
 //Each screen has the following
 // public entry method
@@ -53,7 +51,7 @@ class screens
 
         // MAIN MENU
         void mainMenu(uint8_t menu_id);
-        void mainMenuSecondPage(uint8_t menu_id);
+        void mainMenuSecondPage(uint8_t menu_id,bool settings_OSD);
         
           // SEEK & MANUAL MODE
         void seekMode(uint8_t state); // seek and manual mode

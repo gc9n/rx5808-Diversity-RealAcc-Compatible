@@ -1,9 +1,6 @@
 /*
- * Setings file by Shea Ivey
-
-The MIT License (MIT)
-
-Copyright (c) 2015 Shea Ivey
+ * Setings file 
+GC9n
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -41,14 +38,16 @@ SOFTWARE.
 
 // u8glib has performance issues.
 //#define OLED_128x64_U8G_SCREENS
+ 
 
 // this will be displayed on the screensaver.
 // Up to 10 letters
 #define CALL_SIGN "CALL SIGN"
 
+
 // Feature Togglels
 #define USE_DIVERSITY
-#define USE_IR_EMITTER
+
 //#define USE_FLIP_SCREEN
 #define USE_BOOT_LOGO
 // Choose if you wish to use 8 additional Channels 
@@ -60,8 +59,7 @@ SOFTWARE.
 // used for tuning time
 #define rx5808
 //#define rx5880
-#define CH3 A3
-
+ 
 #define spiDataPin 10
 #define slaveSelectPin 11
 #define spiClockPin 12
@@ -133,7 +131,7 @@ SOFTWARE.
 #define STATE_FAVORITE 9 //gc9n
 
 // Seconds to wait before force entering screensaver
-#define SCREENSAVER_TIMEOUT 10
+#define SCREENSAVER_TIMEOUT 6
 
 #define START_STATE STATE_SEEK
 #define MAX_STATE STATE_MANUAL
@@ -185,6 +183,7 @@ SOFTWARE.
 #endif
 
 #define EEPROM_ADR_BEEP 11
+#define EEPROM_ADR_OSD 113
 #define EEPROM_ADR_ORDERBY 12
 #define EEPROM_ADR_CALLSIGN 20
 
