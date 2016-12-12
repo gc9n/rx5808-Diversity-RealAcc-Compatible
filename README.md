@@ -10,6 +10,7 @@
 * Favorites enhancement
 
 VIDEO
+
 [![Diversity Module RealAcc with OSD (Real time RSSI-Diversity) and Fatshark button support 
 ](https://img.youtube.com/vi/VvQDdLFI8oQ/0.jpg)](https://www.youtube.com/watch?v=VvQDdLFI8oQ)
 
