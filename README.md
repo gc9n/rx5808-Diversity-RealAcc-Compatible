@@ -1,5 +1,5 @@
 
-<h1>OSD Support (Menus-RSSI-Diversity-Battery) Fatshark Button Support</h1>
+<h1>V2.0 OSD Support (Menus-RSSI-Diversity-Battery) Fatshark Button Support</h1>
 
 * Added OSD support for menus
 * Ultra fast Real time RSSI feed back
@@ -22,10 +22,9 @@ If this project help you reduce time to develop, you can give me a cup of coffee
 
 
 
-V1.0
-# rx5808-Diversity-RealAcc-Compatible
-RX5808 Diversity RealAcc Compatible
 
+# rx5808-Diversity-RealAcc-Compatible
+<h1>V1.0 RX5808 Diversity RealAcc Compatible</h1>
 Based on sheaivey/rx5808-pro-diversity project
 
 Added extra features with Favorites tab 
