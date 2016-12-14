@@ -32,6 +32,9 @@ Now the power for the module is independent,
 After that little mod that makes my goggles more “healthier” from damaging the regulator with those power demanding modules, I added into the realacc module a  STMicroelectronics L4941BDT-TR 
 LDO Voltage Regulator 5.0V 1.0A Positive, 
 http://www.mouser.com/ds/2/389/l4941-973941.pdf
+CAUTION THIS NEED TWO CAPACITORS ONE INTO VIN AND GROUND tantalum cap, AND ONE IN THE VOUT AND GROUND  A CERAMIC CAP
+
+
 
 <h1>INSTRUCTIONS  FOR THE SOFTWARE </h1>
  Download the https://github.com/gc9n/rx5808-Diversity-RealAcc-Compatible/releases/download/V2.0/MICRO.MINIM.OSD.SOFTWARE.zip
