@@ -83,15 +83,61 @@ You are not "hurting" your goggles. Your goggles stays intact .
 <img src="https://github.com/gc9n/rx5808-Diversity-RealAcc-Compatible/blob/master/STEPS/STEP%20ONE%20(FacePlate)/15.JPG?raw=true" width="640"/>
 <img src="https://github.com/gc9n/rx5808-Diversity-RealAcc-Compatible/blob/master/STEPS/STEP%20ONE%20(FacePlate)/16.JPG?raw=true" width="640"/>
 
-<h2>Voltage regulator for module</h2>
-We scratch this area top peal off the paint carefully (it,s ground) , and we solder the bottom of 78m05
+Voltage Regulator For Module
 
+I added into the realacc module a  STMicroelectronics L4941BDT-TR 
+LDO Voltage Regulator 5.0V 1.0A Positive, 
+http://www.mouser.com/ds/2/389/l4941-973941.pdf
+
+This regulator is capable to work with input power close to 5v , other regulators in order to give 5v they have to take at least 7.2v
+so L4941 is way to go.
+
+The L4941 Needs 2 capacitors . 
+one Ceramic capacitor 
+http://www.electronic.it/open2b/var/products/372/59/0-db6562e0-500-0805-SMD-ceramic-capacitor-22nF-conf.100pz.jpg
+
+and one tantalum type capacitor  (the line is showing the POSITIVE)
+http://www.radio-electronics.com/images/tantalum-smd-capacitor-code.jpg
+
+
+I found a ceramic capacitor from an old cd rom drive. i just found the right physical dimension.
+this goes between the out pin of the L4941 and ground (polarity doesnt matter)
+
+i scavenge a tantalum electrolytic capacitor from this cd rom drive also ! , i just cross check the 
+letters and found on the web that is 10v 
+this goes between the in pin of the L4941 and ground (polarity matters! the little line is the positive so you have to solder it in VIN pin of the  L4941)
+
+We scratch off the paint in this area carefully (it’s basically electrical ground) , and we solder the bottom (GND) of 5V regulator on to it.
+<img src="https://raw.githubusercontent.com/gc9n/rx5808-Diversity-RealAcc-Compatible/master/STEPS/STEP%20TWO%20(Voltage%20regulator%20for%20module)/0.JPG?raw=true" width="640"/>
+
+We apply solder , and we gother the reg and the caps.
 <img src="https://raw.githubusercontent.com/gc9n/rx5808-Diversity-RealAcc-Compatible/master/STEPS/STEP%20TWO%20(Voltage%20regulator%20for%20module)/1.JPG?raw=true" width="640"/>
 
-<img src="https://raw.githubusercontent.com/gc9n/rx5808-Diversity-RealAcc-Compatible/master/STEPS/STEP%20TWO%20(Voltage%20regulator%20for%20module)/2.JPG?raw=true" width="640"/>
- 
+the legs of the regulator is in the air.  
 <img src="https://raw.githubusercontent.com/gc9n/rx5808-Diversity-RealAcc-Compatible/master/STEPS/STEP%20TWO%20(Voltage%20regulator%20for%20module)/3.JPG?raw=true" width="640"/>
+
+now if you look closer i scrach the pad (is ground) to solder the caps.
+<img src="https://raw.githubusercontent.com/gc9n/rx5808-Diversity-RealAcc-Compatible/master/STEPS/STEP%20TWO%20(Voltage%20regulator%20for%20module)/2.JPG?raw=true" width="640"/>
+
+We apply solder ,
 <img src="https://raw.githubusercontent.com/gc9n/rx5808-Diversity-RealAcc-Compatible/master/STEPS/STEP%20TWO%20(Voltage%20regulator%20for%20module)/4.JPG?raw=true" width="640"/>
+
+tandalum to VIN and GROUND.
+<img src="https://raw.githubusercontent.com/gc9n/rx5808-Diversity-RealAcc-Compatible/master/STEPS/STEP%20TWO%20(Voltage%20regulator%20for%20module)/5.JPG?raw=true" width="640"/>
+
+<img src="https://raw.githubusercontent.com/gc9n/rx5808-Diversity-RealAcc-Compatible/master/STEPS/STEP%20TWO%20(Voltage%20regulator%20for%20module)/6.JPG?raw=true" width="640"/>
+
+ceramic is place
+<img src="https://raw.githubusercontent.com/gc9n/rx5808-Diversity-RealAcc-Compatible/master/STEPS/STEP%20TWO%20(Voltage%20regulator%20for%20module)/7.JPG?raw=true" width="640"/>
+
+
+Positive negative  wire .. the negative is the back of the reg
+<img src="https://raw.githubusercontent.com/gc9n/rx5808-Diversity-RealAcc-Compatible/master/STEPS/STEP%20TWO%20(Voltage%20regulator%20for%20module)/8.JPG?raw=true" width="640"/>
+
+<img src="https://raw.githubusercontent.com/gc9n/rx5808-Diversity-RealAcc-Compatible/master/STEPS/STEP%20TWO%20(Voltage%20regulator%20for%20module)/9.JPG?raw=true" width="640"/>
+
+
+
 
 <h2>VIDEO IN AND OUT</h2>
 This is the most important part , this is were you split the video in half and you give it to the OSD and OSD returns the Overlay .
