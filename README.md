@@ -14,6 +14,12 @@ VIDEO
 [![Diversity Module RealAcc with OSD (Real time RSSI-Diversity) and Fatshark button support 
 ](https://img.youtube.com/vi/VvQDdLFI8oQ/0.jpg)](https://www.youtube.com/watch?v=VvQDdLFI8oQ)
 
+
+Instructions 
+https://oscarliang.com/realacc-osd-menu-button-support/
+
+
+
 If this project help you reduce time to develop, you can give me a cup of coffee :)
 
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=GZKDUKL4C2H5A&lc=GR&item_name=George&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted" target="_blank">
