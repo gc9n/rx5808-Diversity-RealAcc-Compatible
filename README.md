@@ -8,6 +8,7 @@
 * Goggles Battery monitor
 * Fatshark Buttons Compatibility
 * Favorites enhancement
+* "Find Model" Feature
 
 VIDEO
 
