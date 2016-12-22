@@ -25,7 +25,7 @@ SOFTWARE.
 #define settings_h
 
 
-//#define Debug
+// #define Debug
 
 
 // Choose the display you will be using
@@ -42,7 +42,7 @@ SOFTWARE.
 
 // this will be displayed on the screensaver.
 // Up to 10 letters
-#define CALL_SIGN "CALL SIGN"
+#define CALL_SIGN "_"
 
 
 // Feature Togglels
@@ -129,6 +129,7 @@ SOFTWARE.
 #define STATE_RSSI_SETUP 7
 #define STATE_SCREEN_SAVER 8
 #define STATE_FAVORITE 9 //gc9n
+#define STATE_SCREEN_SAVER_LITE 10
 
 // Seconds to wait before force entering screensaver
 #define SCREENSAVER_TIMEOUT 6
