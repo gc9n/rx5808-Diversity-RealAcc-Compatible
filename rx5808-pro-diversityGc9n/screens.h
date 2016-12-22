@@ -59,10 +59,10 @@ class screens
 
           // FAVORITES & MANUAL MODE
       
-        void NoFav(uint8_t state); // fav
+        void NoFav(); // fav
         void FavDelete( uint16_t channelFrequency, uint8_t channel);
         void FavSel(uint8_t favchan); // fav
-        void FavReorg(uint8_t favchan); // fav
+        //void FavReorg(uint8_t favchan); // fav
         
         // BAND SCAN
         void bandScanMode(uint8_t state);
@@ -72,7 +72,7 @@ class screens
         void screenSaver(uint8_t channelName, uint16_t channelFrequency, const char *call_sign);
         void screenSaver(uint8_t diversity_mode, uint8_t channelName, uint16_t channelFrequency, const char *call_sign);
         void updateScreenSaver(uint8_t rssi);
-        void updateScreenSaver(char active_receiver, uint8_t rssi, uint8_t rssiA, uint8_t rssiB); // diversity
+        void updateScreenSaver(char active_receiver, uint8_t rssi, uint8_t rssiA, uint8_t rssiB ); // diversity
 
         // DIVERSITY
         void diversity(uint8_t diversity_mode);
