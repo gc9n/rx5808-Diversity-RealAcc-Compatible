@@ -329,7 +329,7 @@ void loop()
     OSDParams[1] = 3; //By default goes over manual
     SendToOSD(); //UPDATE OSD
 
-#define MAX_MENU 6
+#define MAX_MENU 7
 #define MENU_Y_SIZE 15
 
     char menu_id = 2; //state_last_used-1;
@@ -359,8 +359,7 @@ void loop()
         SendToOSD(); //UPDATE OSD
         break;
       }
-
-
+ 
       switch (menu_id)
       {
         case 0: // AUTO MODE
@@ -390,14 +389,17 @@ void loop()
           menu_id++;
 #endif
         case 4: // Favorites Menu       //gc9n
-          state = STATE_FAVORITE;     //gc9n
-          break;                          //gc9n
+          state = STATE_FAVORITE;       //gc9n
+          break;                        //gc9n
         case 5: // Setup Menu           //gc9n
-          state = STATE_SETUP_MENU;   //gc9n
-          break;                          //gc9n
-        case 6:// Beeps enable/disable
-
-          break;
+          state = STATE_SETUP_MENU;     //gc9n
+          break;                        //gc9n
+        case 6:// Beeps enable/disable  //gc9n
+          break;                        //gc9n
+        case 7://Vres modelo            //gc9n
+           state = STATE_SCREEN_SAVER_LITE;       //gc9n
+           //drawScreen.updateScreenSaver(rssi);
+          break;          
       } // end switch
 
       // draw mode select screen
@@ -631,13 +633,13 @@ void loop()
 
         ///LONG PRESS IN FAVORITES WILL DELETE THE CURRENT FAVORITE CHANNEL
         if  (state_last_used == STATE_FAVORITE && last_state == 255)
-        { beep(100); // beep
+        {  
           OSDParams[0] = -3; //this is delete
           OSDParams[1] = 0; //By default goes over manual
           SendToOSD(); //UPDATE OSD
           EEPROM.write(EEPROM_ADR_TUNE_FAV[lfavs], 255);
           drawScreen.FavDelete(   pgm_read_word_near(channelFreqTable + channelIndex), lfavs + 1);
-
+          
           for (int i = 0; i < 10; i++) {
             temp_EEPROM_ADR_TUNE_FAV[i] = 255;    //empty temp
           }
@@ -663,9 +665,9 @@ void loop()
 
 
           //DELETED SUCCESFULLY AND GO TO FIRST FAV (IF EXISTS)
-          drawScreen.FavReorg(MaxFav);
+          //drawScreen.FavReorg(MaxFav);
           RefreshFav = false;
-          delay(300);
+           delay(1000);
           EEPROM.write(EEPROM_ADR_TUNE_FAV_LAST, 0);
           channelIndex = EEPROM.read(EEPROM_ADR_TUNE_FAV[0]) ;
           lfavs = 0;
@@ -683,7 +685,7 @@ void loop()
           beep(100); // beep
           delay(100);
         }
-        delay(3000);
+        delay(800);
         state = state_last_used; // return to saved function
         force_menu_redraw = 1; // we change the state twice, must force redraw of menu
 
@@ -717,7 +719,7 @@ void loop()
   /*   Processing depending of state   */
   /*************************************/
 #ifndef TVOUT_SCREENS
-  if (state == STATE_SCREEN_SAVER) {
+  if (state == STATE_SCREEN_SAVER || state == STATE_SCREEN_SAVER_LITE) {
 
 
 #ifdef USE_DIVERSITY
@@ -893,7 +895,7 @@ void loop()
     }
 
     if (HaveFav == false)
-    { drawScreen.NoFav(state);
+    { drawScreen.NoFav();
 
     }   // IF YOU DONT HAVE FAVS
 
@@ -919,15 +921,15 @@ void loop()
     // read rssi
     wait_rssi_ready();
     rssi = readRSSI();
-     
     FS_BUTTON_DIR = FSButtonDirection();
+    
     
     channel = channel_from_index(channelIndex); // get 0...48 index depending of current channel
     if (state == STATE_MANUAL) // MANUAL MODE
     {
-        
-        OSDParams[0] = 3;//this is MANUAL MODE
-       
+
+      OSDParams[0] = 3; //this is MANUAL MODE
+
       // handling of keys
       if ( digitalRead(buttonUp) == LOW  || FS_BUTTON_DIR == 1 )       // channel UP
       {
@@ -958,12 +960,13 @@ void loop()
         }
       }
 
-        if (OSDParams[1]!=pgm_read_word_near(channelFreqTable + channelIndex))
+     if (OSDParams[1]!=pgm_read_word_near(channelFreqTable + channelIndex))
         {
         OSDParams[1]=pgm_read_word_near(channelFreqTable + channelIndex);
         SendToOSD(); //UPDATE OSD
+
         }
-      if (!settings_orderby_channel) { // order by frequency
+        if (!settings_orderby_channel) { // order by frequency
         channelIndex = pgm_read_byte_near(channelList + channel);
       }
 
@@ -984,9 +987,9 @@ void loop()
           seek_found = 1;
           time_screen_saver = millis();
           // beep twice as notice of lock
-          beep(100);
-          delay(100);
-          beep(100);
+         // beep(100);
+         // delay(100);
+        //  beep(100);
         }
         else
         { // seeking itself
@@ -1033,16 +1036,17 @@ void loop()
         time_screen_saver = 0;
       }
 
-      SendToOSD(); //UPDATE OSD
-    }
- 
+
+   SendToOSD(); //UPDATE OSD
+    } 
     // change to screensaver after lock and 5 seconds has passed.
     if (((time_screen_saver + 5000 < millis()) && (time_screen_saver != 0) && (rssi > 50)) ||
         ((time_screen_saver != 0 && time_screen_saver + (SCREENSAVER_TIMEOUT * 1000) < millis()))) {
       state = STATE_SCREEN_SAVER;
       OSDParams[0] = -99; // CLEAR OSD
       SendToOSD(); //UPDATE OSD
-    } 
+    }
+ 
     
   
    //teza
@@ -1348,9 +1352,7 @@ uint16_t readRSSI(char receiver)
 #endif
   for (uint8_t i = 0; i < RSSI_READS; i++)
   {
-#ifdef USE_DIVERSITY
     analogRead(rssiPinA);
-#endif
     rssiA += analogRead(rssiPinA);//random(RSSI_MAX_VAL-200, RSSI_MAX_VAL);//
 
 #ifdef USE_DIVERSITY
@@ -1361,7 +1363,7 @@ uint16_t readRSSI(char receiver)
 
 
 #ifdef Debug
-    rssiB +=  random(RSSI_MAX_VAL - 200, RSSI_MAX_VAL); //
+    rssiB += 1;// random(RSSI_MAX_VAL - 200, RSSI_MAX_VAL); //
 #endif
 
 
@@ -1710,5 +1712,4 @@ int8_t FSButtonDirection () //gc9n
   }
 
 }
-
 
