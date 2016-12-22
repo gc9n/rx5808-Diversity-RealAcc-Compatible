@@ -557,7 +557,7 @@ void screens::updateScreenSaver(char active_receiver, uint8_t rssi, uint8_t rssi
           display.setTextColor(WHITE);
           display.setCursor(20, 0);
           display.print(rssiA);
-          display.print(PSTR2("% B"));
+          display.print(PSTR2("% A"));
           display.setCursor(0, 0);
           uint8_t character;
 
