@@ -19,7 +19,9 @@ VIDEO
 Instructions 
 https://oscarliang.com/realacc-osd-menu-button-support/
 
+Theres an update in Diagram.
 
+ <img src="https://raw.githubusercontent.com/gc9n/rx5808-Diversity-RealAcc-Compatible/master/STEPS/STEP%20THREE%20(connections)/Realacc%20-%20MinimOSD%20mod%20.jpg" width="640"/>
 
 If this project help you reduce time to develop, you can give me a cup of coffee :)
 
